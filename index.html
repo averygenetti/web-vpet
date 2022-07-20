@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+			    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+			    crossorigin="anonymous"></script>
+		<script src="https://cdn.rawgit.com/kimmobrunfeldt/progressbar.js/0.5.6/dist/progressbar.js"></script>
+		<script type="text/javascript" src="./js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="./vpet.js"></script>
+		<style>
+			body {
+				background-color: #333;
+				color: white;
+				font-family: sans-serif;
+				padding: 1rem;
+			}
+
+			#vpet {
+				border: 1px solid #222;
+				border-radius: 1rem;
+				padding: 1rem;
+				width:  300px;
+				text-align: left;
+				background-color: #555;
+				margin-top: 5rem;
+
+				filter: drop-shadow(0rem 0rem 1rem #4444dd);
+
+				background: rgb(2,0,36);
+				background: linear-gradient(0deg, rgba(2,0,36,0.2) 0%, rgba(68,68,221,0.2) 50%);
+
+				transform: scale(1.3,1.3);
+			}
+
+			.petButton {
+				position: relative;
+			}
+
+			.petButton:hover .kb_hint {
+				opacity: 0.7;
+			}
+
+			.petButton button:hover {
+				background-color: #7777aa;
+			}
+
+			.petButton button:active:hover, .petButton button.mousedown {
+				background-color: #333366;
+			}
+
+			.petButton button {
+				border: 1px solid #222;
+				border-radius: 0.5rem;
+				/*border-radius: 2rem;*/
+				padding: 0.4rem;
+				background-color: #666699;
+			}
+
+			.petButton button.disabled {
+				color: #666;
+				border: 1px solid #666;
+				opacity: 0.5;
+			}
+
+			.buttons {
+				text-align: center;
+			}
+
+			.kb_hint {
+				width:  32px;
+				position: absolute;
+				top: 2rem;
+				left: 0.5rem;
+				opacity: 0;
+			}
+
+			.petWindow {
+				text-align: center;
+				margin: 1rem;
+			}
+
+			.petSprite {
+				width: 64px;
+			}
+
+			.progress {
+				height: 1rem;
+				width: 80%;
+				margin-top: 0.5rem;
+				float: right;
+				border: 1px solid #222;
+				height: 1rem;
+			}
+
+			ul {
+				padding: 0;
+				margin-top: 0;
+			}
+
+			li {
+				list-style-type: none;
+				margin-left: 0;
+				padding: 0.5rem;
+				padding-bottom: 0;
+			}
+
+			img {
+				image-rendering: pixelated;
+			}
+
+			img.icon {
+				width: 32px;
+			}
+
+			.meters .icon {
+				filter: drop-shadow(0.1rem 0.1rem 0.2rem #4444dd);
+			}
+
+			input {
+				border: 1px solid #222;
+				border-radius: 3px;
+				background-color: #444;
+				color: white;
+				padding: 0.5rem;
+			}
+		</style>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var myvpet = new VPet();
+				console.log(myvpet);
+
+				var $name = $('#pet-name');
+				var $food = $('#pet-food');
+				var $sleep = $('#pet-sleep');
+				var $clean = $('#pet-clean');
+				var $love = $('#pet-love');
+				var $happy = $('#pet-happy');
+				var $asleepStatus = $('#asleepStatus');
+
+				var $cleanButton = $('#cleanButton');
+				var $feedMealButton = $('#feedMealButton');
+				var $petButton = $('#petButton');
+				var $awakenPetButton = $('#awakenPetButton');
+				var $putToBedButton = $('#putToBedButton');
+
+				// var $nameInput = $('#nameInput');
+
+			    var foodBar = new ProgressBar.Line('#foodBar', {
+				  strokeWidth: 7,
+				  duration: 300,
+				  color: '#6666ff',
+				  trailColor: '#333366',
+				  trailWidth: 7,
+				  svgStyle: {width: '100%', height: '100%'}
+			    });
+
+			    var sleepBar = new ProgressBar.Line('#sleepBar', {
+				  strokeWidth: 7,
+				  duration: 300,
+				  color: '#6666ff',
+				  trailColor: '#333366',
+				  trailWidth: 7,
+				  svgStyle: {width: '100%', height: '100%'}
+			    });
+
+			    var cleanBar = new ProgressBar.Line('#cleanBar', {
+				  strokeWidth: 7,
+				  duration: 300,
+				  color: '#6666ff',
+				  trailColor: '#333366',
+				  trailWidth: 7,
+				  svgStyle: {width: '100%', height: '100%'}
+			    });
+
+			    var loveBar = new ProgressBar.Line('#loveBar', {
+				  strokeWidth: 7,
+				  duration: 300,
+				  color: '#6666ff',
+				  trailColor: '#333366',
+				  trailWidth: 7,
+				  svgStyle: {width: '100%', height: '100%'}
+			    });
+
+				var happyBar = new ProgressBar.Line('#happyBar', {
+				  strokeWidth: 7,
+				  duration: 300,
+				  color: '#6666ff',
+				  trailColor: '#333366',
+				  trailWidth: 7,
+				  svgStyle: {width: '100%', height: '100%'}
+			    });
+
+				$feedMealButton.click(function(){
+					if (!myvpet.status.asleep) {
+						myvpet.feedMeal();
+					}
+				});
+
+				$petButton.click(function(){
+					if (!myvpet.status.asleep) {
+						myvpet.petPet();	
+					}
+				});
+
+				$cleanButton.click(function(){
+					if (!myvpet.status.asleep) {
+						myvpet.bathePet();
+					}
+				});
+
+				$putToBedButton.click(function(){
+					myvpet.putPetToBed();
+
+					$petButton.addClass('disabled');
+					$cleanButton.addClass('disabled');
+					$feedMealButton.addClass('disabled');
+					$putToBedButton.hide();
+					$awakenPetButton.show();
+				});
+
+				$awakenPetButton.click(function(){
+					myvpet.awakenPet();
+					$petButton.removeClass('disabled');
+					$cleanButton.removeClass('disabled');
+					$feedMealButton.removeClass('disabled');
+					$putToBedButton.show();
+					$awakenPetButton.hide();
+				});
+
+				$(document).keydown(function(e){
+					switch(e.which) {
+						case 67:
+							$feedMealButton.addClass('mousedown');
+							break;
+						case 86:
+							$petButton.addClass('mousedown');
+							break;
+						case 66:
+							$cleanButton.addClass('mousedown');
+							break;
+						case 78:
+							if (myvpet.status.asleep) {
+								$awakenPetButton.addClass('mousedown');
+							} else {
+								$putToBedButton.addClass('mousedown');
+							}
+							break;
+					}
+				});
+
+				$(document).keyup(function(e){
+					switch(e.which) {
+						case 67:
+							$feedMealButton
+								.removeClass('mousedown')
+								.click();
+							break;
+						case 86:
+							$petButton
+								.removeClass('mousedown')
+								.click();
+							break;
+						case 66:
+							$cleanButton
+								.removeClass('mousedown')
+								.click();
+							break;
+						case 78:
+							if (myvpet.status.asleep) {
+								$awakenPetButton
+									.removeClass('mousedown')
+									.click();
+							} else {
+								$putToBedButton
+									.removeClass('mousedown')
+									.click();
+							}
+							break;
+					}
+				});
+
+				function updateDisplay(vpet) {
+					// $asleepStatus.text(vpet.status.asleep);
+					foodBar.animate(vpet.meters.food / 100);
+					sleepBar.animate(vpet.meters.energy / 100);
+					cleanBar.animate(vpet.meters.clean / 100);
+					loveBar.animate(vpet.meters.love / 100);
+					happyBar.animate(vpet.meters.happy / 100);
+
+
+					$('.petSprite').hide();
+					
+					if (vpet.status.asleep) {
+						$('.petSprite.pet-sleep').show();
+					} else if (vpet.status.happy || vpet.status.veryHappy) {
+						$('.petSprite.pet-happy').show();
+					} else if (vpet.status.sad) {
+						$('.petSprite.pet-sad').show();
+					} else {
+					    $('.petSprite.pet-normal').show();
+					}
+				}
+
+				setInterval(function() {
+					myvpet.update();
+					updateDisplay(myvpet);
+				}, 300);
+
+				// $nameInput.val(myvpet.name);
+			});
+		</script>
+	</head>
+
+	<body>
+		<center>
+			<div id="vpet">
+				<ul class="meters">
+					<!-- <li style="text-align:center"><input id="nameInput" style="width: 95%"/></li> -->
+					<li><img class="icon" src="./img/apple_outline.png" alt="Fullness icon" title="Fullness"/> <div class="progress" id="foodBar"></div></li>
+					<li><img class="icon" src="./img/heart_b_outline.png" alt="Love icon" title="Love" /> <div class="progress" id="loveBar"></div></li>
+					<li><img class="icon" src="./img/bubbles_c_outline.png" alt="Cleanliness icon" title="Cleanliness" /> <div class="progress" id="cleanBar"></div></li>
+					<li><img class="icon" src="./img/battery.png" alt="Energy icon" title="Energy" /> <div class="progress" id="sleepBar"></div></li>
+					<li><img class="icon" src="./img/happy.png" alt="Happiness icon" title="Happiness" /> <div class="progress" id="happyBar"></div></li>
+				</ul>
+
+				<div class="petWindow">
+					<img class="petSprite pet-normal" src="./img/critter_a.gif" />
+					<img class="petSprite pet-down" src="./img/critter_b.gif" style="display:none" />
+					<img class="petSprite pet-sleep" src="./img/critter_b.png" style="display:none" />
+					<img class="petSprite pet-sad" src="./img/critter_c.gif" style="display:none" />
+					<img class="petSprite pet-happy" src="./img/critter_d.gif" style="display:none" />
+				</div>
+
+				<div class="buttons">
+					<span class="petButton">
+						<button id="feedMealButton" title="Feed">
+							<img class="icon" src="./img/meat_d.png" />
+						</button>
+						<img class="kb_hint" src="./img/keyboard_c.png" />
+					</span>
+					<span class="petButton">
+						<button id="petButton" title="Pet">
+							<img class="icon" src="./img/hand.png" />
+						</button>
+						<img class="kb_hint" src="./img/keyboard_v.png" />
+					</span>
+					<span class="petButton">
+						<button id="cleanButton" title="Bathe">
+							<img class="icon" src="./img/tub.png" />
+						</button>
+						<img class="kb_hint" src="./img/keyboard_b.png" />
+					</span>
+					<span class="petButton">
+						<button id="putToBedButton" title="Put to bed">
+							<img class="icon" src="./img/moon_outline.png" />
+						</button>
+						<button id="awakenPetButton" title="Awaken" style="display: none">
+							<img class="icon" src="./img/sun_outline.png" />
+						</button>
+						<img class="kb_hint" src="./img/keyboard_n.png" />
+					</span>
+				</div>
+			</div>
+		</center>
+	</body>
+</html>
