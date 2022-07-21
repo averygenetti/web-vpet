@@ -42,6 +42,7 @@
 
 			.petButton button:hover {
 				background-color: #7777aa;
+				cursor: url(./img/finger_outline.png) 4 12, auto;
 			}
 
 			.petButton button:active:hover, .petButton button.mousedown {
@@ -81,6 +82,7 @@
 
 			.petSprite {
 				width: 64px;
+				cursor: url(./img/finger_outline.png) 4 12, auto;
 			}
 
 			.progress {
@@ -226,6 +228,10 @@
 					$feedMealButton.removeClass('disabled');
 					$putToBedButton.show();
 					$awakenPetButton.hide();
+				});
+
+				$('.petSprite').click(function(){
+					$petButton.click();
 				});
 
 				$(document).keydown(function(e){

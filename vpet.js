@@ -43,6 +43,7 @@ function VPet(name='Pet', size=2, skill=10, speed=10, strength=10) {
 		sickness: false,
 		injury: false,
 		sad: false,
+		mad: false,
 		happy: false,
 		veryHappy: false,
 		severeIllness: false,
@@ -191,7 +192,10 @@ function VPet(name='Pet', size=2, skill=10, speed=10, strength=10) {
 			}
 
 			if (this.meters.happy == 0) {
+				this.setStatus('mad');
 				this.stats.friendEXP -= 0.5;
+			} else {
+				this.setStatus('mad', false);
 			}
 
 			if (this.stats.friendEXP >= this.stats.maxFriendEXP) {
@@ -227,6 +231,7 @@ function VPet(name='Pet', size=2, skill=10, speed=10, strength=10) {
 	this.levelUpFriendship = function() {
 		this.stats.maxFriendEXP = this.stats.maxFriendEXP + Math.round(this.friendLevel^1.5);
 		this.stats.friendLevel += 1;
+		this.stats.fiendEXP = 0;
 	};
 
 	// actions
